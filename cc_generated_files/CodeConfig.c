@@ -42,6 +42,7 @@ void System_Init()
 	GPIO_Init();
 	TimeBase1_Init();
 	USIM_SIM_Init();
+	ADC_Init();
     /*End System_Init()*/
 }
 
@@ -59,6 +60,8 @@ void System_Setting()
 	TB1_ENABLE();
 	PSC1_ENABLE();
 	USIM_SIM_ENABLE();
+	ADC_SelectChannel(ADC_CH3);
+	ADC_ENABLE();
     /*End System_Setting()*/
 }
 

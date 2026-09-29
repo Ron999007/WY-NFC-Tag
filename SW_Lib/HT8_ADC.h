@@ -72,20 +72,20 @@
 /*==================== The end of Select ADC Resolution ======================*/
 
 /*========================= Select ADC Clock Rate ============================*/
-    #define ADC_CK_RATE_2M          (1)
+//  #define ADC_CK_RATE_2M          (1)
 //  #define ADC_CK_RATE_1M          (1)
 //  #define ADC_CK_RATEs_500K       (1)
-//  #define ADC_CK_RATE_100_250K    (1)
+    #define ADC_CK_RATE_100_250K    (1)
 /*==================== The end of Select ADC Clock Rate ======================*/
 
 /*============================ Select ADC clock ==============================*/
 //  #define ADC_CLOCK_FSYS          (1)
 //  #define ADC_CLOCK_FSYS_DIV2     (1)
-    #define ADC_CLOCK_FSYS_DIV4     (1)
+//  #define ADC_CLOCK_FSYS_DIV4     (1)
 //  #define ADC_CLOCK_FSYS_DIV8     (1)
 //  #define ADC_CLOCK_FSYS_DIV16    (1)
 //  #define ADC_CLOCK_FSYS_DIV32    (1)
-//  #define ADC_CLOCK_FSYS_DIV64    (1)
+    #define ADC_CLOCK_FSYS_DIV64    (1)
 //  #define ADC_CLOCK_FSYS_DIV128   (1)
 /*======================= The end of Select ADC clock ========================*/
 
@@ -96,8 +96,8 @@
 /*================= The end of Select ADC reference voltage ==================*/
 
 /*========================= Select ADC data format ===========================*/
-//  #define ADC_VALUE_ALIGN_LEFT    (1)
-    #define ADC_VALUE_ALIGN_RIGHT   (1)
+    #define ADC_VALUE_ALIGN_LEFT    (1)
+//  #define ADC_VALUE_ALIGN_RIGHT   (1)
 
     #ifdef  ADC_VALUE_ALIGN_LEFT
             #ifdef  ADC_12BIT_MODE

@@ -155,21 +155,21 @@
 
 /*=========================== Select PB0 function ============================*/
 //  #define PB0_Outout_H    (1)     /*Output mode, output high*/
-    #define PB0_Outout_L    (1)     /*Output mode, output low*/
+//  #define PB0_Outout_L    (1)     /*Output mode, output low*/
 //  #define PB0_Input       (1)     /*Input mode, floating*/
 //  #define PB0_Input_PU    (1)     /*Input mode, pull up*/
-//  #define PB0_AN0         (1)     /*A/D channel 0 function*/
+    #define PB0_AN0         (1)     /*A/D channel 0 function*/
 //  #define PB0_VREF        (1)     /*ADC reference voltage input function*/
 //  #define PB0_PU          (1)     /*Pull up enable*/
 /*===================== The end of Select PB0 function =======================*/
 
 /*=========================== Select PB1 function ============================*/
 //  #define PB1_Outout_H    (1)     /*Output mode, output high*/
-    #define PB1_Outout_L    (1)     /*Output mode, output low*/
+//  #define PB1_Outout_L    (1)     /*Output mode, output low*/
 //  #define PB1_Input       (1)     /*Input mode, floating*/
 //  #define PB1_Input_PU    (1)     /*Input mode, pull up*/
 //  #define PB1_STCK        (1)     /*STM TCK input function*/
-//  #define PB1_AN1         (1)     /*A/D channel 1 function*/
+    #define PB1_AN1         (1)     /*A/D channel 1 function*/
 //  #define PB1_PU          (1)     /*Pull up enable*/
 /*===================== The end of Select PB1 function =======================*/
 
@@ -185,11 +185,11 @@
 
 /*=========================== Select PB3 function ============================*/
 //  #define PB3_Outout_H    (1)     /*Output mode, output high*/
-    #define PB3_Outout_L    (1)     /*Output mode, output low*/
+//  #define PB3_Outout_L    (1)     /*Output mode, output low*/
 //  #define PB3_Input       (1)     /*Input mode, floating*/
 //  #define PB3_Input_PU    (1)     /*Input mode, pull up*/
 //  #define PB3_PTCK1       (1)     /*PTM1 TCK input function*/
-//  #define PB3_AN3         (1)     /*A/D channel 3 function*/
+    #define PB3_AN3         (1)     /*A/D channel 3 function*/
 //  #define PB3_PU          (1)     /*Pull up enable*/
 /*===================== The end of Select PB3 function =======================*/
 
@@ -206,32 +206,32 @@
 
 /*=========================== Select PB5 function ============================*/
 //  #define PB5_Outout_H    (1)     /*Output mode, output high*/
-    #define PB5_Outout_L    (1)     /*Output mode, output low*/
+//  #define PB5_Outout_L    (1)     /*Output mode, output low*/
 //  #define PB5_Input       (1)     /*Input mode, floating*/
 //  #define PB5_Input_PU    (1)     /*Input mode, pull up*/
 //  #define PB5_INT1        (1)     /*External interrupt 1 function*/
 //  #define PB5_STPB        (1)     /*STMB output function*/
-//  #define PB5_AN5         (1)     /*A/D channel 5 function*/
+    #define PB5_AN5         (1)     /*A/D channel 5 function*/
 //  #define PB5_PU          (1)     /*Pull up enable*/
 /*===================== The end of Select PB5 function =======================*/
 
 /*=========================== Select PB6 function ============================*/
 //  #define PB6_Outout_H    (1)     /*Output mode, output high*/
-    #define PB6_Outout_L    (1)     /*Output mode, output low*/
+//  #define PB6_Outout_L    (1)     /*Output mode, output low*/
 //  #define PB6_Input       (1)     /*Input mode, floating*/
 //  #define PB6_Input_PU    (1)     /*Input mode, pull up*/
 //  #define PB6_STPI        (1)     /*STM input function*/
-//  #define PB6_AN6         (1)     /*A/D channel 6 function*/
+    #define PB6_AN6         (1)     /*A/D channel 6 function*/
 //  #define PB6_PU          (1)     /*Pull up enable*/
 /*===================== The end of Select PB6 function =======================*/
 
 /*=========================== Select PB7 function ============================*/
 //  #define PB7_Outout_H    (1)     /*Output mode, output high*/
-    #define PB7_Outout_L    (1)     /*Output mode, output low*/
+//  #define PB7_Outout_L    (1)     /*Output mode, output low*/
 //  #define PB7_Input       (1)     /*Input mode, floating*/
 //  #define PB7_Input_PU    (1)     /*Input mode, pull up*/
 //  #define PB7_RESB        (1)     /*Reset pin function*/
-//  #define PB7_AN7         (1)     /*A/D channel 7 function*/
+    #define PB7_AN7         (1)     /*A/D channel 7 function*/
 //  #define PB7_PU          (1)     /*Pull up enable*/
 /*===================== The end of Select PB7 function =======================*/
 
