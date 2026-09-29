@@ -43,7 +43,7 @@
 /*======================= Select High frequency clock ========================*/
 //  #define FH_HIRC_2M      (1)
 //  #define FH_HIRC_4M      (1)
-    #define FH_HIRC_8M      (1)
+//  #define FH_HIRC_8M      (1)
 //  #define FH_MIRC_64K     (1)
 //  #define FH_MIRC_128K    (1)
 //  #define FH_MIRC_256K    (1)
@@ -53,7 +53,7 @@
 //  #define FH_HXT_SE10M    (1)
 
 /* HXT frequency is larger than 10MHz */
-//  #define FH_HXT_L10M     (1)
+    #define FH_HXT_L10M     (1)
 /*================= The end of Select High frequency clock ===================*/
 
 /*======================= Select Low frequency clock =========================*/

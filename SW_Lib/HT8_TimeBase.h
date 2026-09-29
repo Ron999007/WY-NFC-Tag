@@ -87,8 +87,8 @@
 /*=============== The end of Select TimeBase0 time-out period ================*/
 
 /*==================== Select TimeBase1 time-out period ======================*/
-    #define TB1_Period_2_8          (1)
-//  #define TB1_Period_2_9          (1)
+//  #define TB1_Period_2_8          (1)
+    #define TB1_Period_2_9          (1)
 //  #define TB1_Period_2_10         (1)
 //  #define TB1_Period_2_11         (1)
 //  #define TB1_Period_2_12         (1)

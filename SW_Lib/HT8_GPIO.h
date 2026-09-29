@@ -135,7 +135,7 @@
 
 /*=========================== Select PA6 function ============================*/
 //  #define PA6_Outout_H    (1)     /*Output mode, output high*/
-    #define PA6_Outout_L    (1)     /*Output mode, output low*/
+//  #define PA6_Outout_L    (1)     /*Output mode, output low*/
 //  #define PA6_Input       (1)     /*Input mode, floating*/
 //  #define PA6_Input_PU    (1)     /*Input mode, pull up*/
 //  #define PA6_PTP0I       (1)     /*PTM0 input function*/
@@ -145,7 +145,7 @@
 
 /*=========================== Select PA7 function ============================*/
 //  #define PA7_Outout_H    (1)     /*Output mode, output high*/
-    #define PA7_Outout_L    (1)     /*Output mode, output low*/
+//  #define PA7_Outout_L    (1)     /*Output mode, output low*/
 //  #define PA7_Input       (1)     /*Input mode, floating*/
 //  #define PA7_Input_PU    (1)     /*Input mode, pull up*/
 //  #define PA7_PTP0I       (1)     /*PTM0 input function*/
