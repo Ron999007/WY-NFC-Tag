@@ -29,7 +29,8 @@ extern u8 g_SRAM_Data_4[16];
 typedef enum {
     NFC_STATE_WAIT_FIRST_PACKET = 0,
     NFC_STATE_STREAMING,
-    NFC_STATE_REFRESH_EPD
+    NFC_STATE_REFRESH_EPD,
+    NFC_STATE_WAIT
 } NFC_Task_State_t;
 
 static NFC_Task_State_t nfc_state = NFC_STATE_WAIT_FIRST_PACKET;
@@ -120,6 +121,7 @@ void Task_NFC_PassThrough_Process(void)
                 if (received_chunks >= TOTAL_CHUNKS)
                 {
                     //UART_PrintStr("[NFC] All chunks received. Refreshing EPD...\r\n");
+                    gu32_nfc_timer = SysTick_GetTicks();
                     nfc_state = NFC_STATE_REFRESH_EPD;
                 }
             }
@@ -131,14 +133,23 @@ void Task_NFC_PassThrough_Process(void)
             break;
 
         case NFC_STATE_REFRESH_EPD:
+        	if((SysTick_GetTicks()-gu32_nfc_timer) < 625000) break;	// Wait 20 seconds
             /* Trigger physical refresh on the E-Paper display */
             drv_EPD_Update_Trigger();
+            gu32_nfc_timer = SysTick_GetTicks();
             
             /* Reset state to wait for the next NFC tap */
-            received_chunks = 0;
-            nfc_state = NFC_STATE_WAIT_FIRST_PACKET;
-            //nfc_state = NFC_STATE_WAIT;
+            //received_chunks = 0;
+            //nfc_state = NFC_STATE_WAIT_FIRST_PACKET;
+            nfc_state = NFC_STATE_WAIT;
             break;
+            
+        case NFC_STATE_WAIT:
+        	if((SysTick_GetTicks()-gu32_nfc_timer) < 156250) break;	// Wait 5 seconds
+        	
+        	received_chunks = 0;
+            nfc_state = NFC_STATE_WAIT_FIRST_PACKET;
+        	break;
 
         default:
             nfc_state = NFC_STATE_WAIT_FIRST_PACKET;
