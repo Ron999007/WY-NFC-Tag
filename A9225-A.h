@@ -23,7 +23,5 @@ u8 A9225A_RegisterRead(u8 MEMadr,u8 REGadr,u8 *rval);
 u8 A9225A_MemoryRead(u8 adr,u8 *rval);
 void A9225A_RegisterWrite(u8 MEMadr,u8 REGadr,u8 MASK,u8 val);
 u8 A9225A_MemoryWrite(u8 adr,u8 *val);
-void NFC_Tag_PassThrough_Init(void);
-void Process_NFC_Data(void);
 
 #endif   /* _BC7262_H_ */

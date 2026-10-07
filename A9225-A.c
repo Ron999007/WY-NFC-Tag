@@ -15,11 +15,6 @@ volatile bit NFC_RdCmdFinish;
 volatile bit NFC_WrCmdFinish;
 volatile bit NFC_WrMemFinish;
 
-/* Buffers for 64-byte SRAM data (16 bytes per block) */
-u8 g_SRAM_Data_1[16];
-u8 g_SRAM_Data_2[16];
-u8 g_SRAM_Data_3[16];
-u8 g_SRAM_Data_4[16];
 
 #define A9225A_IIC_WRITE_DADDR  (A9225_DEVICE_ADDR << 1)
 #define A9225A_IIC_READ_DADDR   ((A9225_DEVICE_ADDR << 1) | 0x01)
@@ -394,31 +389,4 @@ void NFC_Tag_PassThrough_Init(void)
     /* 3. Hand SRAM ownership back to NFC side and enable Pass-Through */
     /* 0x7D = PTHRU_ON | FD_OFF(11b) | FD_ON(11b) | TRANSFER_DIR(NFC->I2C) */
     A9225A_RegisterWrite(0xFE, 0x00, 0xFF, 0x7D);
-}
-
-/**
- * @brief  Process incoming NFC SRAM data via Software I2C.
- * @retval None
- */
-void Process_NFC_Data(void)
-{
-    if (_pa3 == 0) 
-    {
-        GCC_CLRWDT();
-
-        /* Step 1: Switch SRAM reading direction to I2C */
-        A9225A_RegisterWrite(0xFE, 0x00, 0xFF, 0x01);
-        SysTick_DelayMs(5); 
-
-        /* Step 2: Fetch 64 bytes payload from 0xF8 to 0xFB */
-        A9225A_MemoryRead(0xF8, g_SRAM_Data_1);
-        A9225A_MemoryRead(0xF9, g_SRAM_Data_2);
-        A9225A_MemoryRead(0xFA, g_SRAM_Data_3);
-        A9225A_MemoryRead(0xFB, g_SRAM_Data_4);
-
-        /* Step 3: Switch SRAM reading direction back to NFC */
-        A9225A_RegisterWrite(0xFE, 0x00, 0xFF, 0x7D);
-
-        /* Step 4: Add your custom payload parsing logic here */
-    }
 }

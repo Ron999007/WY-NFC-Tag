@@ -9,150 +9,158 @@
 /* Hardware FD (Field Detect) Pin Mapping */
 #define NFC_FD_PIN _pa3
 
-/* EPD Image Transmission Constants */
-#define EPD_TOTAL_BYTES  12480
-#define CHUNK_SIZE       64
-#define TOTAL_CHUNKS     (EPD_TOTAL_BYTES / CHUNK_SIZE) /* 195 chunks */
-
+/* 
+ * Static buffer for continuous packet processing.
+ * Using a single 64-byte unified array directly maps to the BC45B4211 SRAM 
+ * without needing extra memory-copy operations, saving HT66L2550A RAM overhead.
+ */
+static u8 sram_buf[PROTOCOL_PACKET_SIZE];
 u32 gu32_nfc_timer;
 
-/* 
- * Extern buffers defined in A9225-A.c to save RAM space. 
- * Reusing these arrays prevents memory overflow on HT66L2550A.
+/* ====================================================================
+ * Local CRC16 Utility
+ * ==================================================================== */
+/**
+ * @brief Calculate CRC16 for data integrity check
  */
-extern u8 g_SRAM_Data_1[16];
-extern u8 g_SRAM_Data_2[16];
-extern u8 g_SRAM_Data_3[16];
-extern u8 g_SRAM_Data_4[16];
-
-/* State Machine Enumeration for NFC streaming */
-typedef enum {
-    NFC_STATE_WAIT_FIRST_PACKET = 0,
-    NFC_STATE_STREAMING,
-    NFC_STATE_REFRESH_EPD,
-    NFC_STATE_WAIT
-} NFC_Task_State_t;
-
-static NFC_Task_State_t nfc_state = NFC_STATE_WAIT_FIRST_PACKET;
-static u16 received_chunks = 0;
+static u16 tag_crc16(u8 *data, u16 len, u16 init_val) {
+    u16 crc = init_val;
+    u16 i;
+    u8 j;
+    
+    for (i = 0; i < len; i++) {
+        crc ^= (u16)data[i];
+        for (j = 0; j < 8; j++) {
+            if (crc & 0x0001) crc = (crc >> 1) ^ 0x8408;
+            else              crc >>= 1;
+        }
+    }
+    return crc;
+}
 
 void Task_NFC_PassThrough_Init(void)
 {
-    received_chunks = 0;
-    nfc_state = NFC_STATE_WAIT_FIRST_PACKET;
+	u8 dummy_buf[16];
+   
+    /* 1. Force SRAM ownership to I2C side (Disable PTHRU, set DIR to I2C) */
+    A9225A_RegisterWrite(0xFE, 0x00, 0xFF, 0x01);
     
-    /* Initialize Pass-Through mode on BC45B4211 */
-    NFC_Tag_PassThrough_Init();
+    /* Short delay for internal Tag state machine switching */
+    SysTick_DelayMs(10); 
+
+    /* 2. Dummy read the last SRAM block (0xFB) to force FD pin release */
+    /* Because ownership is now I2C, this will ACK and read successfully */
+    A9225A_MemoryRead(0xFB, dummy_buf);
+
+    /* 3. Hand SRAM ownership back to NFC side and enable Pass-Through */
+    /* 0x7D = PTHRU_ON | FD_OFF(11b) | FD_ON(11b) | TRANSFER_DIR(NFC->I2C) */
+    A9225A_RegisterWrite(0xFE, 0x00, 0xFF, 0x7D);
     
     //UART_PrintStr("[NFC] Pass-Through Task Initialized.\r\n");
 }
 
 void Task_NFC_PassThrough_Process(void)
 {
-//	u8 i;
+	u16 timeout;
 	
-    switch(nfc_state)
-    {
-        case NFC_STATE_WAIT_FIRST_PACKET:
-            /* Wait for the first FD falling edge indicating NFC write from Reader */
-            if (NFC_FD_PIN == 0)
-            {
-                //UART_PrintStr("[NFC] First packet detected. Init EPD...\r\n");
-                
-                /* Initialize EPD and clear old data from SRAM */
-                drv_EPD_Init();
-                drv_EPD_StartFrame();
-
-                /* Transition to streaming state immediately to process this first packet */
-                nfc_state = NFC_STATE_STREAMING;
-                received_chunks = 0;
-            }
-            break;
-
-        case NFC_STATE_STREAMING:
-            /* Poll the FD pin to detect when 64-byte SRAM is full */
-            if (NFC_FD_PIN == 0)
-            {
-            	gu32_nfc_timer = SysTick_GetTicks();
-                /* Clear Watchdog during intensive data transfer */
-                GCC_CLRWDT(); 
-
-                /* Step 1: Switch SRAM ownership to I2C */
-                A9225A_RegisterWrite(0xFE, 0x00, 0xFF, 0x01);
-
-                /* Step 2: Read 64 bytes from SRAM (Blocks 0xF8 to 0xFB) */
-                A9225A_MemoryRead(0xF8, g_SRAM_Data_1);
-                A9225A_MemoryRead(0xF9, g_SRAM_Data_2);
-                A9225A_MemoryRead(0xFA, g_SRAM_Data_3);
-                A9225A_MemoryRead(0xFB, g_SRAM_Data_4);
-#if 0                
-                for(i=0; i<16; i++){
-                	if(g_SRAM_Data_1[i] != i) _pb5 = 0;	
-                	_pb5 = 1;
-               	}
-               	
-                for(i=0; i<16; i++){
-                	if(g_SRAM_Data_2[i] != (i+16)) _pb5 = 0;	
-                	_pb5 = 1;
-               	}
-               	
-                for(i=0; i<16; i++){
-                	if(g_SRAM_Data_3[i] != (i+32)) _pb5 = 0;	
-                	_pb5 = 1;
-               	}               	               	
- 
-                for(i=0; i<16; i++){
-                	if(g_SRAM_Data_4[i] != (i+48)) _pb5 = 0;	
-                	_pb5 = 1;
-               	}
-#endif               	                
-                /* Step 3: Stream data to EPD via SPI */
-                drv_EPD_SendDataBlock(g_SRAM_Data_1, 16);
-                drv_EPD_SendDataBlock(g_SRAM_Data_2, 16);
-                drv_EPD_SendDataBlock(g_SRAM_Data_3, 16);
-                drv_EPD_SendDataBlock(g_SRAM_Data_4, 16);
-
-                /* Step 4: Return SRAM ownership to NFC for the next chunk */
-                A9225A_RegisterWrite(0xFE, 0x00, 0xFF, 0x7D);
-
-                received_chunks++;
-
-                /* Check if the entire image (195 chunks) has been received */
-                if (received_chunks >= TOTAL_CHUNKS)
-                {
-                    //UART_PrintStr("[NFC] All chunks received. Refreshing EPD...\r\n");
-                    gu32_nfc_timer = SysTick_GetTicks();
-                    nfc_state = NFC_STATE_REFRESH_EPD;
-                }
-            }
+	/* When FD pin is pulled low (NFC data from Reader is ready in SRAM) */
+    if (NFC_FD_PIN == 0) {
+        
+        /* Clear Watchdog during intensive data transfer */
+        GCC_CLRWDT(); 
+        gu32_nfc_timer = SysTick_GetTicks();
+        
+        /* Read 64 bytes directly into the unified sram_buf array via pointer offsets */
+        /* Hardware direction is already Rx (0x7D) */
+        A9225A_MemoryRead(0xF8, &sram_buf[0]);
+        A9225A_MemoryRead(0xF9, &sram_buf[16]);
+        A9225A_MemoryRead(0xFA, &sram_buf[32]);
+        A9225A_MemoryRead(0xFB, &sram_buf[48]);
+        
+        /* Extract Protocol Header */
+        u8 cmd = sram_buf[0];
+        u16 pkt_idx = sram_buf[1] | ((u16)sram_buf[2] << 8);
+        
+        /* Calculate and Verify CRC (over the first 62 bytes) */
+        u16 calc_crc = tag_crc16(sram_buf, 62, 0x6363);
+        u16 rx_crc   = sram_buf[62] | ((u16)sram_buf[63] << 8);
+        
+        u8 process_status = STATUS_FAIL;
+        
+        if (calc_crc == rx_crc) {
+            process_status = STATUS_PASS;
             
-            if((SysTick_GetTicks()-gu32_nfc_timer) >= 10000)	// 320 ms
-            {
-				Task_NFC_PassThrough_Init();            	
+            /* ====================================================
+             * Application Command Dispatcher
+             * ==================================================== */
+            switch (cmd) {
+                case CMD_IMG_TRANSFER:
+                    /* If this is the first chunk, initialize the EPD */
+                    if (pkt_idx == 0) {
+                        drv_EPD_Init();
+                        drv_EPD_StartFrame();
+                    }
+                    
+                    /* Stream 59 bytes of Image payload to EPD via SPI */
+                    /* Offset points directly to Byte 3 to skip the header */
+                    drv_EPD_SendDataBlock(&sram_buf[3], PROTOCOL_PAYLOAD_SIZE);
+                    
+                    /* If this is the last chunk, trigger EPD physical refresh */
+                    if (pkt_idx >= (EPD_TOTAL_PAYLOADS - 1)) {
+                        drv_EPD_Update_Trigger();
+                    }
+                    break;
+                    
+                case CMD_FW_UPGRADE:
+                    /* TODO: Implement Firmware OTA Flash Write for HT66L2540A */
+                    // IAP_WriteFlashChunk(pkt_idx, &sram_buf[3], PROTOCOL_PAYLOAD_SIZE);
+                    break;
+                    
+                default:
+                    process_status = STATUS_FAIL;
+                    break;
             }
-            break;
-
-        case NFC_STATE_REFRESH_EPD:
-        	if((SysTick_GetTicks()-gu32_nfc_timer) < 625000) break;	// Wait 20 seconds
-            /* Trigger physical refresh on the E-Paper display */
-            drv_EPD_Update_Trigger();
-            gu32_nfc_timer = SysTick_GetTicks();
-            
-            /* Reset state to wait for the next NFC tap */
-            //received_chunks = 0;
-            //nfc_state = NFC_STATE_WAIT_FIRST_PACKET;
-            nfc_state = NFC_STATE_WAIT;
-            break;
-            
-        case NFC_STATE_WAIT:
-        	if((SysTick_GetTicks()-gu32_nfc_timer) < 156250) break;	// Wait 5 seconds
-        	
-        	received_chunks = 0;
-            nfc_state = NFC_STATE_WAIT_FIRST_PACKET;
-        	break;
-
-        default:
-            nfc_state = NFC_STATE_WAIT_FIRST_PACKET;
-            break;
+        }
+        
+        /* Prepare ACK Frame Response inside the same buffer */
+        sram_buf[0] = cmd | CMD_ACK_MASK;          /* Mask command with 0x80 (e.g., 0x81) */
+        sram_buf[1] = (u8)(pkt_idx & 0xFF);        /* Echo Index LSB */
+        sram_buf[2] = (u8)((pkt_idx >> 8) & 0xFF); /* Echo Index MSB */
+        sram_buf[3] = process_status;              /* Data Integrity Verification Status */
+        
+        /* Switch TRANSFER_DIR to Tx Mode (I2C -> NFC) */
+        A9225A_RegisterWrite(0xFE, 0x00, 0xFF, 0x7C);
+        
+        /* Write the 64-byte ACK frame directly from sram_buf back to SRAM */
+        A9225A_MemoryWrite(0xF8, &sram_buf[0]);
+        A9225A_MemoryWrite(0xF9, &sram_buf[16]);
+        A9225A_MemoryWrite(0xFA, &sram_buf[32]);
+        A9225A_MemoryWrite(0xFB, &sram_buf[48]);
+        
+        /* Block until Reader reads the SRAM via RF */
+        timeout = 60000;
+        while (NFC_FD_PIN == 1 && timeout > 0) { 
+            GCC_CLRWDT(); 
+            timeout--;
+        }
+        
+        /* Force SRAM ownership to I2C side (Disable PTHRU, set DIR to I2C) */
+	    A9225A_RegisterWrite(0xFE, 0x00, 0xFF, 0x01);
+	    
+	    /* Short delay for internal Tag state machine switching */
+	    SysTick_DelayMs(1); 
+	
+	    /* Dummy read the last SRAM block (0xFB) to force FD pin release */
+	    /* Because ownership is now I2C, this will ACK and read successfully */
+	    A9225A_MemoryRead(0xFB, &sram_buf[48]);
+        
+        /* Revert back to Rx Mode (NFC -> I2C) for the next packet */
+        A9225A_RegisterWrite(0xFE, 0x00, 0xFF, 0x7D);
+        
+        timeout = 60000;
+        while (NFC_FD_PIN == 0 && timeout > 0) { 
+            GCC_CLRWDT(); 
+            timeout--;
+        }
     }
 }
