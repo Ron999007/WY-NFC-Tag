@@ -4,13 +4,23 @@
 #include "SW_Lib/HT8_Type.h"
 
 /* ====================================================================
+ * Tag Firmware Version (3 Digits)
+ * ==================================================================== */
+#define TAG_FW_VER_MAJOR      2     /* MAJOR */
+#define TAG_FW_VER_MINOR      2     /* MINOR */
+#define TAG_FW_VER_PATCH      0     /* PATCH */
+
+/* ====================================================================
  * Application Protocol Configuration
  * ==================================================================== */
 #define CMD_IMG_TRANSFER      0x01
 #define CMD_FW_UPGRADE        0x02
+#define CMD_POLL_VOLTAGE      0x03  /* Reader requests current capacitor voltage */
+#define CMD_UPDATE_EPD        0x04  /* Reader commands Tag to refresh EPD */
+#define CMD_UPDATE_FAIL       0x05  /* Reader aborts update due to timeout */
+#define CMD_INIT_EPD          0x06
 #define CMD_ACK_MASK          0x80  /* Tag ACK response mask (e.g., 0x81 for Image ACK) */
 
-#define STATUS_LOW_VOL		  0x02
 #define STATUS_PASS           0x01
 #define STATUS_FAIL           0x00
 

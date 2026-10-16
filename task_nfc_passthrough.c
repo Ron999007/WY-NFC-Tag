@@ -83,6 +83,7 @@ void Task_NFC_PassThrough_Init(void)
 void Task_NFC_PassThrough_Process(void)
 {
 	u16 timeout;
+	unsigned int vol_mv = 0;
 	
 	/* When FD pin is pulled low (NFC data from Reader is ready in SRAM) */
     if (NFC_FD_PIN == 0) {
@@ -115,29 +116,34 @@ void Task_NFC_PassThrough_Process(void)
              * Application Command Dispatcher
              * ==================================================== */
             switch (cmd) {
+				case CMD_INIT_EPD:
+                    drv_EPD_Init();
+                    drv_EPD_StartFrame();
+                    
+                    sram_buf[4] = TAG_FW_VER_MAJOR;
+                    sram_buf[5] = TAG_FW_VER_MINOR;
+                    sram_buf[6] = TAG_FW_VER_PATCH;
+                    break;
+                    
                 case CMD_IMG_TRANSFER:
-                    /* If this is the first chunk, initialize the EPD */
-                    if (pkt_idx == 0) {
-                        drv_EPD_Init();
-                        drv_EPD_StartFrame();
-                    }
-                    
-                    /* Stream 59 bytes of Image payload to EPD via SPI */
-                    /* Offset points directly to Byte 3 to skip the header */
                     drv_EPD_SendDataBlock(&sram_buf[3], PROTOCOL_PAYLOAD_SIZE);
+                    break;
                     
-                    /* If this is the last chunk, trigger EPD physical refresh */
-                    if (pkt_idx >= (EPD_TOTAL_PAYLOADS - 1)) {
-                    	//UART_PrintStr("Input Voltage: ");
-    					//UART_PrintVoltage(Calculate_Input_Voltage_mV(ADC_GetChannelValue(3)));  
-    					//UART_PrintLine();
-    					if (Calculate_Input_Voltage_mV(ADC_GetChannelValue(3)) >= 4000) {
-    						drv_EPD_Update_Trigger();
-    					}
-                        else {
-                        	process_status = STATUS_LOW_VOL;
-                        }
-                    }
+                case CMD_POLL_VOLTAGE:
+                    /* Read ADC and encode 16-bit voltage into payload [Byte 4, 5] */
+                    vol_mv = Calculate_Input_Voltage_mV(ADC_GetChannelValue(3));
+                    sram_buf[4] = (u8)(vol_mv & 0xFF);
+                    sram_buf[5] = (u8)((vol_mv >> 8) & 0xFF);
+                    break;
+                    
+                case CMD_UPDATE_EPD:
+                    /* Reader confirmed voltage is sufficient, execute EPD refresh */
+                    drv_EPD_Update_Trigger();
+                    break;
+                    
+                case CMD_UPDATE_FAIL:
+                    /* Reader timed out (10s), aborting update process */
+                    /* Optional: Sleep or reset EPD state machine here */
                     break;
                     
                 case CMD_FW_UPGRADE:
