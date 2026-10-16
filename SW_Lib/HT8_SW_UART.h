@@ -83,11 +83,11 @@
 //  #define SW_UART_TM_VALUE_H  _ptmah  /*Define Baudrate timer CCRA high byte register*/
 //  #define SW_UART_TM_VALUE_L  _ptmal  /*Define Baudrate timer CCRA low byte register*/
 //  #define SW_UART_TM_VALUE    832     /*Define Baudrate timer CCRA value*/
-    #define SW_UART_USE_PTM0      (1)
-    #define SW_UART_TM_EN()      PTM0_ENABLE()
-    #define SW_UART_TM_DIS()     PTM0_DISABLE()
-    #define SW_UART_TM_VALUE_H   _ptm0ah
-    #define SW_UART_TM_VALUE_L   _ptm0al
+    #define SW_UART_USE_STM      (1)
+    #define SW_UART_TM_EN()      STM_ENABLE()
+    #define SW_UART_TM_DIS()     STM_DISABLE()
+    #define SW_UART_TM_VALUE_H   _stmah
+    #define SW_UART_TM_VALUE_L   _stmal
     #define SW_UART_TM_VALUE     832
 
 

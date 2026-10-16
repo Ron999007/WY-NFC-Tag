@@ -97,9 +97,9 @@
 
 
 /*======================= Select PTMn operating mode =========================*/
-//  #define PTM0_TIMER_COUNTER_MODE         (1)
+    #define PTM0_TIMER_COUNTER_MODE         (1)
 //  #define PTM0_PWM_OUTPUT_MODE            (1)
-  #define PTM0_COMPARE_MATCH_MODE         (1)
+//  #define PTM0_COMPARE_MATCH_MODE         (1)
 //  #define PTM0_CAPTURE_INPUT_MODE         (1)
 //  #define PTM0_SINGLE_PULSE_OUTPUT_MODE   (1)
 
@@ -214,7 +214,7 @@
 #ifdef  PTM0_COMPARE_MATCH_MODE
     
     /* Select PTM0 function in Compare match output mode */
-      #define PTM0_NO_CHANGE          (1)
+    //  #define PTM0_NO_CHANGE          (1)
     //  #define PTM0_OUTPUT_LOW         (1)
     //  #define PTM0_OUTPUT_HIGH        (1)
     //  #define PTM0_OUTPUT_TOGGLE      (1)
@@ -222,11 +222,11 @@
     
     /* PTP0 output control */
     //  #define PTM0_INITIAL_LOW        (1)
-      #define PTM0_INITIAL_HIGH       (1)
+    //  #define PTM0_INITIAL_HIGH       (1)
     /* The end of PTP0 output control */
     
     /* PTP0 output polarity control */
-      #define PTM0_NON_INVERTED       (1)
+    //  #define PTM0_NON_INVERTED       (1)
     //  #define PTM0_INVERTED           (1)
     /* The end of PTP0 output polarity control */
 #endif

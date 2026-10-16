@@ -185,11 +185,11 @@
 
 /*=========================== Select PB3 function ============================*/
 //  #define PB3_Outout_H    (1)     /*Output mode, output high*/
-    #define PB3_Outout_L    (1)     /*Output mode, output low*/
+//  #define PB3_Outout_L    (1)     /*Output mode, output low*/
 //  #define PB3_Input       (1)     /*Input mode, floating*/
 //  #define PB3_Input_PU    (1)     /*Input mode, pull up*/
 //  #define PB3_PTCK1       (1)     /*PTM1 TCK input function*/
-//  #define PB3_AN3         (1)     /*A/D channel 3 function*/
+    #define PB3_AN3         (1)     /*A/D channel 3 function*/
 //  #define PB3_PU          (1)     /*Pull up enable*/
 /*===================== The end of Select PB3 function =======================*/
 

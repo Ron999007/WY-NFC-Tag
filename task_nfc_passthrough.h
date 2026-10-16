@@ -10,8 +10,10 @@
 #define CMD_FW_UPGRADE        0x02
 #define CMD_ACK_MASK          0x80  /* Tag ACK response mask (e.g., 0x81 for Image ACK) */
 
+#define STATUS_LOW_VOL		  0x02
 #define STATUS_PASS           0x01
 #define STATUS_FAIL           0x00
+
 
 #define PROTOCOL_PACKET_SIZE  64
 #define PROTOCOL_PAYLOAD_SIZE 59    /* 64 - 1(Cmd) - 2(Idx) - 2(CRC) = 59 Bytes */
@@ -35,5 +37,20 @@ void Task_NFC_PassThrough_Init(void);
  * @retval None
  */
 void Task_NFC_PassThrough_Process(void);
+
+/* ====================================================================
+ * Application ADC Configuration
+ * ==================================================================== */
+/* Define integer constants for Fixed-Point Math */
+#define VREF_MV           3000UL    /* Reference voltage in mV (3.0V) */
+#define ADC_MAX_STEP      4096UL    /* 12-bit ADC max step */
+
+/* 
+ * Firmware voltage restoration ratio (Inverse of hardware divider)
+ * V_in = V_pin * (1000k + 150k) / 150k 
+ * V_in = V_pin * 1150 / 150 = V_pin * 23 / 3
+ */
+#define DIVIDER_MULT      23UL      /* Multiplier MUST be 23 */
+#define DIVIDER_DIV       3UL       /* Divisor MUST be 3 */
 
 #endif /* TASK_NFC_PASSTHROUGH_H */

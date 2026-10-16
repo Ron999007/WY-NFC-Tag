@@ -51,7 +51,7 @@
 //  #define _STM            (1)
     #define _TIMEBASE       (1)
 //  #define _EEPROM         (1)
-//  #define _ADC            (1)
+    #define _ADC            (1)
 //  #define _LCD            (1)
 //  #define _SW_I2C_Master  (1)
 //  #define _SW_SPI_Master  (1)

@@ -7,7 +7,7 @@ FirstGenTime=2026-08-31
 [MCU]
 Chip=HT66L2550A
 Package=32 QFN
-Pin1=PB5
+Pin0=AN3
 Pin2=PB4
 Pin3=PB2
 Pin4=PD4
@@ -29,6 +29,7 @@ Pin-2=SDI
 1=GPIO
 2=Time Base1
 3=USIM
+4=ADC
 [System Operation Mode]
 HXT Mode Unit=2
 HXT Mode=16000000
@@ -140,3 +141,14 @@ Enable Chip Select Pin=1
 SPI Clock=0
 SPI Mode=0
 Data Shift Order=1
+[ADC]
+ADC Resolution=1
+ADC Clock Rate=3
+Enable Temperature Sensor=0
+ADC Clock=6
+ADC Output Format=1
+ADC External Input Enable=1
+ADC External Input Select="AN0",0,"AN1",0,"AN2",0,"AN3",1,"AN4",0,"AN5",0,"AN6",0,"AN7",0
+ADC Input Select=0
+ADC Reference Voltage=0
+ADC Interrupt Setting=0

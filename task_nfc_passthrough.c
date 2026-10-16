@@ -2,9 +2,9 @@
 #include "task_nfc_passthrough.h"
 #include "A9225-A.h"
 #include "drv_epd.h"
-//#include "uart_printf.h"
 #include "sys_tick.h"
 #include "HT66L2550A.h"
+//#include "uart_printf.h"
 
 /* Hardware FD (Field Detect) Pin Mapping */
 #define NFC_FD_PIN _pa3
@@ -16,6 +16,27 @@
  */
 static u8 sram_buf[PROTOCOL_PACKET_SIZE];
 u32 gu32_nfc_timer;
+
+/*******************************************************************************
+ * @brief    Calculate the actual input voltage in millivolts (mV) using integer math.
+ * @param    adc_raw_value: The 12-bit ADC raw data from AN3 (0 ~ 4095).
+ * @retval   Actual pre-divider voltage in millivolts (mV).
+ *******************************************************************************/
+unsigned int Calculate_Input_Voltage_mV(unsigned int adc_raw_value)
+{
+    unsigned long voltage_mv = 0;
+
+    /* Step 1: Calculate voltage at the MCU pin in mV */
+    /* Cast to 32-bit (unsigned long) to prevent overflow during multiplication */
+    voltage_mv = ((unsigned long)adc_raw_value * VREF_MV) / ADC_MAX_STEP;
+
+    /* Step 2: Compensate for the external hardware voltage divider */
+    /* Multiply by 23, then divide by 3 to restore the original voltage */
+    voltage_mv = (voltage_mv * DIVIDER_MULT) / DIVIDER_DIV;
+
+    /* Cast back to 16-bit integer since max voltage ~10000mV fits in 16 bits */
+    return (unsigned int)voltage_mv;
+}
 
 /* ====================================================================
  * Local CRC16 Utility
@@ -107,7 +128,15 @@ void Task_NFC_PassThrough_Process(void)
                     
                     /* If this is the last chunk, trigger EPD physical refresh */
                     if (pkt_idx >= (EPD_TOTAL_PAYLOADS - 1)) {
-                        drv_EPD_Update_Trigger();
+                    	//UART_PrintStr("Input Voltage: ");
+    					//UART_PrintVoltage(Calculate_Input_Voltage_mV(ADC_GetChannelValue(3)));  
+    					//UART_PrintLine();
+    					if (Calculate_Input_Voltage_mV(ADC_GetChannelValue(3)) >= 4000) {
+    						drv_EPD_Update_Trigger();
+    					}
+                        else {
+                        	process_status = STATUS_LOW_VOL;
+                        }
                     }
                     break;
                     

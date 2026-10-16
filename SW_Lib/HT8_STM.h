@@ -75,7 +75,7 @@
 /*========= The end of Select STMn function in Capture input mode ============*/
 
 /*======================= Select STMn operating mode =========================*/
-//  #define STM_TIMER_COUNTER_MODE          (1)
+    #define STM_TIMER_COUNTER_MODE          (1)
 //  #define STM_PWM_OUTPUT_MODE             (1)
 //  #define STM_COMPARE_MATCH_MODE          (1)
 //  #define STM_CAPTURE_INPUT_MODE          (1)
@@ -85,7 +85,7 @@
 
 /*======================= Select STMn counter clock ==========================*/
 //  #define STM_FSYS_DIV4               (1)
-//  #define STM_FSYS                    (1)
+    #define STM_FSYS                    (1)
 //  #define STM_FH_DIV16                (1)
 //  #define STM_FH_DIV64                (1)
 //  #define STM_FSUB                    (1)
@@ -95,7 +95,7 @@
 /*================== The end of Select STMn counter clock ====================*/
 
 /*=================== Select STMn counter clear condition ====================*/
-//  #define STM_CCRA_MATCH              (1)
+    #define STM_CCRA_MATCH              (1)
 //  #define STM_CCRP_MATCH              (1)
 
 /*============= The end of Select STMn counter clear condition ===============*/

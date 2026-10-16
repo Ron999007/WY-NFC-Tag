@@ -824,6 +824,44 @@ const unsigned char image_data[] = {
 };
 #endif
 
+#if 0
+/*******************************************************************************
+ * @brief    Application task to read ADC and print voltage via UART.
+ * @param    None
+ * @retval   None
+ *******************************************************************************/
+void Task_ReportVoltage(void)
+{
+    unsigned int raw_adc = 0;
+    unsigned int actual_voltage_mv = 0;
+
+
+    /* 1. Get raw ADC value from Channel 3 (AN3) */
+    raw_adc = ADC_GetChannelValue(3);
+    UART_PrintStr("sadc0: ");
+    UART_PrintHex(_sadc0, 2);
+    UART_PrintLine();
+    UART_PrintStr("sadc1: ");
+    UART_PrintHex(_sadc1, 2);
+    UART_PrintLine();
+    UART_PrintStr("sadc2: ");
+    UART_PrintHex(_sadc2, 2);
+    UART_PrintLine();
+    
+    UART_PrintStr("Input raw adc: ");
+    UART_PrintDec(raw_adc);
+	UART_PrintLine();
+	
+    /* 2. Convert raw value to millivolts using fixed-point math */
+    actual_voltage_mv = Calculate_Input_Voltage_mV(raw_adc);
+
+    /* 3. Transmit the result via UART */
+    UART_PrintStr("Input Voltage: ");
+    UART_PrintVoltage(actual_voltage_mv);  /* This will print e.g., "5.300" */
+    UART_PrintLine();
+}
+#endif
+
 void main()
 {
 //	u16 i;
@@ -846,15 +884,16 @@ void main()
        the enough time for the internal circuit to become stable and accurate.*/
     GCC_DELAY(DELAY_CNT);
 
-
+#if 0
     /*******************************************************************************
      * User's application code
      *******************************************************************************/
     /* Explicitly set the SW_UART state machine to TX_MODE before transmitting. */
-    //SW_UART_Mode_Set(TX_MODE);
+    SW_UART_Mode_Set(TX_MODE);
     
-	//UART_PrintStr("WY_NFC_Tag Start!");
-	//UART_PrintLine();
+	UART_PrintStr("WY_NFC_Tag Start!");
+	UART_PrintLine();
+#endif
 	
 #if 0	
 	/* =========================================================================
@@ -964,6 +1003,8 @@ void main()
     	GCC_CLRWDT();
     	//Process_NFC_Data();
 		Task_NFC_PassThrough_Process(); 
+		//SysTick_DelayMs(500);
+		//Task_ReportVoltage();
     }
 }
 

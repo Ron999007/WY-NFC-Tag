@@ -92,6 +92,26 @@ void UART_PrintHex(unsigned int num, unsigned char digits)
 }
 
 /*******************************************************************************
+ * @brief    Print a voltage stored in millivolts (mV) as Volts (V.xxx).
+ * @param    voltage_mv: Voltage in millivolts (e.g., 5300 for 5.3V)
+ * @retval   None
+ *******************************************************************************/
+void UART_PrintVoltage(int voltage_mv) 
+{
+    int int_part = voltage_mv / 1000;         /* Get Volts */
+    int frac_part = voltage_mv % 1000;        /* Get Millivolts */
+
+    UART_PrintDec(int_part);                  /* Print 5 */
+    SW_UART_Transmit((u16)'.');               /* Print . */
+    
+    /* Handle leading zeros for the fractional part manually */
+    if (frac_part < 100) SW_UART_Transmit((u16)'0');
+    if (frac_part < 10)  SW_UART_Transmit((u16)'0');
+    
+    UART_PrintDec(frac_part);                 /* Print 300 */
+}
+
+/*******************************************************************************
  * @brief    Print a carriage return and line feed via UART.
  * @param    None
  * @retval   None

@@ -31,6 +31,13 @@ void UART_PrintDec(int num);
 void UART_PrintHex(unsigned int num, unsigned char digits);
 
 /*******************************************************************************
+ * @brief    Print a voltage stored in millivolts (mV) as Volts (V.xxx).
+ * @param    voltage_mv: Voltage in millivolts (e.g., 5300 for 5.3V)
+ * @retval   None
+ *******************************************************************************/
+void UART_PrintVoltage(int voltage_mv);
+
+/*******************************************************************************
  * @brief    Print a carriage return and line feed via UART0.
  * @param    None
  * @retval   None
