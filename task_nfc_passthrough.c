@@ -84,6 +84,7 @@ void Task_NFC_PassThrough_Process(void)
 {
 	u16 timeout;
 	unsigned int vol_mv = 0;
+	u8 u8_image_index;
 	
 	/* When FD pin is pulled low (NFC data from Reader is ready in SRAM) */
     if (NFC_FD_PIN == 0) {
@@ -123,6 +124,7 @@ void Task_NFC_PassThrough_Process(void)
                     sram_buf[4] = TAG_FW_VER_MAJOR;
                     sram_buf[5] = TAG_FW_VER_MINOR;
                     sram_buf[6] = TAG_FW_VER_PATCH;
+                    sram_buf[7] = EEPROM_Read_Byte(0);
                     break;
                     
                 case CMD_IMG_TRANSFER:
@@ -136,7 +138,14 @@ void Task_NFC_PassThrough_Process(void)
                     sram_buf[5] = (u8)((vol_mv >> 8) & 0xFF);
                     break;
                     
-                case CMD_UPDATE_EPD:
+                case CMD_UPDATE_EPD:         
+                	u8_image_index = EEPROM_Read_Byte(0); 
+                	u8_image_index++;
+                	if (u8_image_index >= IMAGE_MAX_NUM)
+                	{
+                		u8_image_index = 0;
+                	}     
+                	EEPROM_Write_Byte(u8_image_index, IMAGE_MAX_NUM_ADDR);
                     /* Reader confirmed voltage is sufficient, execute EPD refresh */
                     drv_EPD_Update_Trigger();
                     break;

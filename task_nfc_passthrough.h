@@ -7,8 +7,10 @@
  * Tag Firmware Version (3 Digits)
  * ==================================================================== */
 #define TAG_FW_VER_MAJOR      2     /* MAJOR */
-#define TAG_FW_VER_MINOR      2     /* MINOR */
+#define TAG_FW_VER_MINOR      3     /* MINOR */
 #define TAG_FW_VER_PATCH      0     /* PATCH */
+#define IMAGE_MAX_NUM_ADDR    0
+#define IMAGE_MAX_NUM	 	  3
 
 /* ====================================================================
  * Application Protocol Configuration

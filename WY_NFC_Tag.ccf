@@ -30,6 +30,7 @@ Pin-2=SDI
 2=Time Base1
 3=USIM
 4=ADC
+5=EEPROM
 [System Operation Mode]
 HXT Mode Unit=2
 HXT Mode=16000000
