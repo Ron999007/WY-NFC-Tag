@@ -995,16 +995,28 @@ void main()
     /* 4. Trigger the physical display refresh */
     drv_EPD_Update_Trigger();
 #endif	
-	//NFC_Tag_PassThrough_Init();
+	
+#if 0
+    _pb5 = 0;
+    
+    WDT_DISABLE();
+    EMI_DISABLE();
+    //ADC_DISABLE();
+    EnterHaltMode(HALT_SLEEP);
+    
+    _nop();_nop();_nop();_nop();_nop();
+    _nop();_nop();_nop();_nop();_nop();
+    //SysTick_DelayMs(10);
+    
+    _pb5 = 1;
+#endif
+
 	Task_NFC_PassThrough_Init();
 	
     while (1)
     {
     	GCC_CLRWDT();
-    	//Process_NFC_Data();
-		Task_NFC_PassThrough_Process(); 
-		//SysTick_DelayMs(500);
-		//Task_ReportVoltage();
+		Task_NFC_PassThrough_Process(); 		
     }
 }
 

@@ -34,6 +34,7 @@
 /* Includes-------------------------------------------------------------------*/
 #include "HT8_it.h"
 #include "..\sys_tick.h"
+#include "..\task_nfc_passthrough.h"
 
 /*******************************************************************************
   * @brief    External interrupt 0 routine..
@@ -55,7 +56,8 @@ void __attribute((interrupt(0x04))) INT0_ISR(void)
     #endif
 
     /* user define */
-
+	//_pb5 = ~_pb5;
+	FD_INT_Flag_Set(1);
 }
 
 /*******************************************************************************

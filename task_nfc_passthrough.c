@@ -9,6 +9,7 @@
 /* Hardware FD (Field Detect) Pin Mapping */
 #define NFC_FD_PIN _pa3
 
+
 /* 
  * Static buffer for continuous packet processing.
  * Using a single 64-byte unified array directly maps to the BC45B4211 SRAM 
@@ -16,7 +17,19 @@
  */
 static u8 sram_buf[PROTOCOL_PACKET_SIZE];
 u32 gu32_nfc_timer;
+static unsigned char gu8_FD_INT;
 
+#if 1
+void FD_INT_Flag_Set(u8 u8_flag)
+{
+	gu8_FD_INT = u8_flag;
+}
+
+unsigned char FD_INT_Flag_Get(void)
+{
+	return gu8_FD_INT;
+}
+#endif
 /*******************************************************************************
  * @brief    Calculate the actual input voltage in millivolts (mV) using integer math.
  * @param    adc_raw_value: The 12-bit ADC raw data from AN3 (0 ~ 4095).
@@ -87,8 +100,9 @@ void Task_NFC_PassThrough_Process(void)
 	u8 u8_image_index;
 	
 	/* When FD pin is pulled low (NFC data from Reader is ready in SRAM) */
-    if (NFC_FD_PIN == 0) {
-        
+    //if (NFC_FD_PIN == 0) {
+    if (FD_INT_Flag_Get() == 1) {
+           
         /* Clear Watchdog during intensive data transfer */
         GCC_CLRWDT(); 
         gu32_nfc_timer = SysTick_GetTicks();
@@ -103,6 +117,11 @@ void Task_NFC_PassThrough_Process(void)
         /* Extract Protocol Header */
         u8 cmd = sram_buf[0];
         u16 pkt_idx = sram_buf[1] | ((u16)sram_buf[2] << 8);
+        
+        //if (pkt_idx == 30)
+        //{
+        //	EnterHaltMode(HALT_SLEEP);
+        //}
         
         /* Calculate and Verify CRC (over the first 62 bytes) */
         u16 calc_crc = tag_crc16(sram_buf, 62, 0x6363);
@@ -206,5 +225,22 @@ void Task_NFC_PassThrough_Process(void)
             GCC_CLRWDT(); 
             timeout--;
         }
+        
+        FD_INT_Flag_Set(0);
     }
+
+#if 0    
+    _pb5 = 1;
+    WDT_DISABLE();
+    EMI_DISABLE();
+    //ADC_DISABLE();
+    EnterHaltMode(HALT_SLEEP);
+    
+    _nop();_nop();_nop();_nop();_nop();
+    _nop();_nop();_nop();_nop();_nop();
+    
+    EMI_ENABLE();
+    WDT_ENABLE();
+    _pb5 = 0;
+#endif   
 }

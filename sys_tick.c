@@ -52,5 +52,5 @@ void SysTick_DelayMs(u32 ms)
 void SysTick_Handler(void)
 {
     g_timebase_ticks++;
-    //_pb5 = ~_pb5;
+    //_pb7 = ~_pb7;
 }

@@ -43,6 +43,8 @@ void System_Init()
 	TimeBase1_Init();
 	USIM_SIM_Init();
 	ADC_Init();
+	EXIT_Init();
+	WDT_Init();
     /*End System_Init()*/
 }
 
@@ -62,6 +64,9 @@ void System_Setting()
 	USIM_SIM_ENABLE();
 	ADC_SelectChannel(ADC_CH3);
 	ADC_ENABLE();
+	INT0_CLEAR_ISR_FLAG();
+	INT0_ISR_ENABLE();
+	WDT_ENABLE();
     /*End System_Setting()*/
 }
 

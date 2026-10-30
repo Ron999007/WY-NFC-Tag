@@ -46,7 +46,7 @@
 /*======================== WDT overflow time select ==========================*/
 //  #define WDT_OF_TIME_2_8     (1)     /*WDT overflow time 2^8/fWDT*/
 //  #define WDT_OF_TIME_2_10    (1)     /*WDT overflow time 2^10/fWDT*/
-//  #define WDT_OF_TIME_2_12    (1)     /*WDT overflow time 2^12/fWDT*/
+    #define WDT_OF_TIME_2_12    (1)     /*WDT overflow time 2^12/fWDT*/
 //  #define WDT_OF_TIME_2_14    (1)     /*WDT overflow time 2^14/fWDT*/
 //  #define WDT_OF_TIME_2_15    (1)     /*WDT overflow time 2^15/fWDT*/
 //  #define WDT_OF_TIME_2_16    (1)     /*WDT overflow time 2^16/fWDT*/

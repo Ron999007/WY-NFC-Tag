@@ -104,11 +104,11 @@
 /*=========================== Select PA3 function ============================*/
 //  #define PA3_Outout_H    (1)     /*Output mode, output high*/
 //  #define PA3_Outout_L    (1)     /*Output mode, output low*/
-    #define PA3_Input       (1)     /*Input mode, floating*/
+//  #define PA3_Input       (1)     /*Input mode, floating*/
 //  #define PA3_Input_PU    (1)     /*Input mode, pull up*/
-//  #define PA3_INT0        (1)     /*External interrupt 0 function*/
+    #define PA3_INT0        (1)     /*External interrupt 0 function*/
 //  #define PA3_PTP0        (1)     /*PTM0 output function*/
-    #define PA3_WU          (1)     /*Wake up enable*/
+//  #define PA3_WU          (1)     /*Wake up enable*/
     #define PA3_PU          (1)     /*Pull up enable*/
 /*===================== The end of Select PA3 function =======================*/
 

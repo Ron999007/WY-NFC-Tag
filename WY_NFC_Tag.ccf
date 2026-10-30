@@ -8,6 +8,7 @@ FirstGenTime=2026-08-31
 Chip=HT66L2550A
 Package=32 QFN
 Pin0=AN3
+Pin1=PB5
 Pin2=PB4
 Pin3=PB2
 Pin4=PD4
@@ -21,7 +22,7 @@ Pin21=SCK
 Pin22=SDO
 Pin23=PC1
 Pin24=PC0
-Pin26=PA3
+Pin26=INT0
 Pin-1=SCSB
 Pin-2=SDI
 [Project IP]
@@ -31,6 +32,8 @@ Pin-2=SDI
 3=USIM
 4=ADC
 5=EEPROM
+6=External Interrupt0
+7=WDT
 [System Operation Mode]
 HXT Mode Unit=2
 HXT Mode=16000000
@@ -153,3 +156,9 @@ ADC External Input Select="AN0",0,"AN1",0,"AN2",0,"AN3",1,"AN4",0,"AN5",0,"AN6",
 ADC Input Select=0
 ADC Reference Voltage=0
 ADC Interrupt Setting=0
+[External Interrupt0]
+External Interrupt=2
+Enable Interrupt=1
+[WDT]
+WDT Overflow Time=2
+WDT Enable=1

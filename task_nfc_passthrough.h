@@ -35,6 +35,10 @@
 /* Calculate total payloads needed (Ceiling division) */
 #define EPD_TOTAL_PAYLOADS    ((EPD_TOTAL_BYTES + PROTOCOL_PAYLOAD_SIZE - 1) / PROTOCOL_PAYLOAD_SIZE)
 
+
+void FD_INT_Flag_Set(u8 u8_flag);
+unsigned char FD_INT_Flag_Get(void);
+
 /* 
  * @brief Initializes the NFC Pass-Through task and state machine.
  * @param None

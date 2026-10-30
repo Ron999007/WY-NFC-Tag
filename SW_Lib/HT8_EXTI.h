@@ -55,13 +55,13 @@
 /*============== External interrupt edge control for INT0 pin ================*/
 //  #define INT0_DISABLE            (1)
 //  #define INT0_RISING_EDGE        (1)
-//  #define INT0_FALLING_EDGE       (1)
+    #define INT0_FALLING_EDGE       (1)
 //  #define INT0_BOTH_EDGE          (1)
 
 /*============== External interrupt edge control for INT1 pin ================*/
 //  #define INT1_DISABLE            (1)
 //  #define INT1_RISING_EDGE        (1)
-    #define INT1_FALLING_EDGE       (1)
+//  #define INT1_FALLING_EDGE       (1)
 //  #define INT1_BOTH_EDGE          (1)
 
 /*========= The end of External interrupt edge control for INTn pin ==========*/
